@@ -290,11 +290,29 @@ function setupTouchControls() {
     addListeners(down, 's');
     addListeners(right, 'd');
 
-    console.log("¡Controles táctiles y de ratón configurados con éxito!");
-}
+        console.log("¡Controles táctiles y de ratón configurados con éxito!");
 
+    }
 
-// --- INICIO Y PANTALLA DE INICIO ---
+    
+
+    // FAIL-SAFE PARA CONTROLES PEGADOS: Si se levanta un dedo en cualquier parte, se detiene todo.
+
+    window.addEventListener('touchend', () => {
+
+        keys.w = false;
+
+        keys.a = false;
+
+        keys.s = false;
+
+        keys.d = false;
+
+    });
+
+    
+
+    // --- INICIO Y PANTALLA DE INICIO ---
 
 function drawStartScreen() {
     ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';

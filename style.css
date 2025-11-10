@@ -14,6 +14,13 @@ body {
 canvas {
     background-color: #000;
     border: 2px solid white;
+    /* Hacemos que el canvas sea responsive */
+    width: 95%;
+    height: auto;
+    aspect-ratio: 800 / 600; /* Mantiene la proporción 4:3 del juego */
+    max-height: 75vh; /* Evita que sea demasiado alto en pantallas alargadas */
+    position: relative; 
+    z-index: 1;         
 }
 
 #touch-controls {
@@ -22,6 +29,7 @@ canvas {
     bottom: 5%; /* Lo posiciona más abajo */
     width: 100%;
     user-select: none;
+    z-index: 100; /* Asegura que los controles estén por encima de todo */
 }
 
 .touch-row {
