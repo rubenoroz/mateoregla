@@ -15,9 +15,9 @@ canvas {
     background-color: #000;
     border: 2px solid white;
     /* Hacemos que el canvas sea responsive */
-    width: 95%;
-    height: auto;
-    aspect-ratio: 800 / 600; /* Mantiene la proporción 4:3 del juego */
+    width: 95%; /* Ocupa el 95% del ancho disponible */
+    max-width: 800px; /* Pero no más de 800px de ancho (tamaño original del juego) */
+    height: auto; /* Mantiene la proporción automáticamente */
     max-height: 75vh; /* Evita que sea demasiado alto en pantallas alargadas */
     position: relative; 
     z-index: 1;         

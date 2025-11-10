@@ -298,15 +298,31 @@ function setupTouchControls() {
 
     // FAIL-SAFE PARA CONTROLES PEGADOS: Si se levanta un dedo en cualquier parte, se detiene todo.
 
+    
+
     window.addEventListener('touchend', () => {
+
+    
+
+        console.log("Global touchend: Reseteando teclas."); // Mensaje de depuración
+
+    
 
         keys.w = false;
 
+    
+
         keys.a = false;
+
+    
 
         keys.s = false;
 
+    
+
         keys.d = false;
+
+    
 
     });
 
