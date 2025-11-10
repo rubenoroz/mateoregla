@@ -252,14 +252,25 @@ window.addEventListener('keyup', handleKeyUp);
 
 // --- LÓGICA PARA CONTROLES TÁCTILES ---
 function setupTouchControls() {
+    console.log("Configurando los controles táctiles...");
+
     const up = document.getElementById('touch-up');
     const left = document.getElementById('touch-left');
     const down = document.getElementById('touch-down');
     const right = document.getElementById('touch-right');
 
+    // Verificamos si los botones existen
+    if (!up || !left || !down || !right) {
+        console.error("¡Error! No se encontraron uno o más botones de control en el HTML.");
+        return; // No continuamos si los botones no existen
+    }
+    console.log("Botones encontrados:", { up, left, down, right });
+
+
     const handleTouch = (e, key, isPressed) => {
         e.preventDefault(); // Prevenir comportamiento por defecto (scroll, zoom)
         keys[key] = isPressed;
+        console.log(`Tecla: ${key}, Presionada: ${isPressed}`); // Mensaje para ver si se registra el toque
     };
 
     // Eventos para el botón de ARRIBA
@@ -281,6 +292,8 @@ function setupTouchControls() {
     right.addEventListener('touchstart', (e) => handleTouch(e, 'd', true));
     right.addEventListener('touchend', (e) => handleTouch(e, 'd', false));
     right.addEventListener('touchcancel', (e) => handleTouch(e, 'd', false));
+
+    console.log("¡Controles táctiles configurados con éxito!");
 }
 
 
