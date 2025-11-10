@@ -337,5 +337,8 @@ function init() {
     canvas.addEventListener('touchstart', startListener, { once: true });
 }
 
-// Empezar el proceso de inicialización
-init();
+// Espera a que todo el HTML esté cargado antes de ejecutar el script
+document.addEventListener('DOMContentLoaded', () => {
+    // Empezar el proceso de inicialización
+    init();
+});
