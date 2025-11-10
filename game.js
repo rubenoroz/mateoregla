@@ -252,7 +252,7 @@ window.addEventListener('keyup', handleKeyUp);
 
 // --- LÓGICA PARA CONTROLES TÁCTILES ---
 function setupTouchControls() {
-    console.log("Configurando los controles táctiles...");
+    console.log("Configurando los controles táctiles y de ratón...");
 
     const up = document.getElementById('touch-up');
     const left = document.getElementById('touch-left');
@@ -262,38 +262,35 @@ function setupTouchControls() {
     // Verificamos si los botones existen
     if (!up || !left || !down || !right) {
         console.error("¡Error! No se encontraron uno o más botones de control en el HTML.");
-        return; // No continuamos si los botones no existen
+        return; 
     }
     console.log("Botones encontrados:", { up, left, down, right });
 
-
-    const handleTouch = (e, key, isPressed) => {
-        e.preventDefault(); // Prevenir comportamiento por defecto (scroll, zoom)
+    const handleInteraction = (e, key, isPressed) => {
+        e.preventDefault(); // Prevenir comportamiento por defecto (scroll, zoom, selección)
         keys[key] = isPressed;
-        console.log(`Tecla: ${key}, Presionada: ${isPressed}`); // Mensaje para ver si se registra el toque
+        console.log(`Tecla: ${key}, Presionada: ${isPressed}`); // Mensaje para ver si se registra el evento
     };
 
-    // Eventos para el botón de ARRIBA
-    up.addEventListener('touchstart', (e) => handleTouch(e, 'w', true));
-    up.addEventListener('touchend', (e) => handleTouch(e, 'w', false));
-    up.addEventListener('touchcancel', (e) => handleTouch(e, 'w', false));
+    // Función para añadir todos los listeners a un botón
+    const addListeners = (element, key) => {
+        // Eventos TÁCTILES para celulares
+        element.addEventListener('touchstart', (e) => handleInteraction(e, key, true));
+        element.addEventListener('touchend', (e) => handleInteraction(e, key, false));
+        element.addEventListener('touchcancel', (e) => handleInteraction(e, key, false));
+        
+        // Eventos de RATÓN para computadora
+        element.addEventListener('mousedown', (e) => handleInteraction(e, key, true));
+        element.addEventListener('mouseup', (e) => handleInteraction(e, key, false));
+        element.addEventListener('mouseleave', (e) => handleInteraction(e, key, false)); // Si el ratón se sale del botón
+    };
 
-    // Eventos para el botón de IZQUIERDA
-    left.addEventListener('touchstart', (e) => handleTouch(e, 'a', true));
-    left.addEventListener('touchend', (e) => handleTouch(e, 'a', false));
-    left.addEventListener('touchcancel', (e) => handleTouch(e, 'a', false));
+    addListeners(up, 'w');
+    addListeners(left, 'a');
+    addListeners(down, 's');
+    addListeners(right, 'd');
 
-    // Eventos para el botón de ABAJO
-    down.addEventListener('touchstart', (e) => handleTouch(e, 's', true));
-    down.addEventListener('touchend', (e) => handleTouch(e, 's', false));
-    down.addEventListener('touchcancel', (e) => handleTouch(e, 's', false));
-
-    // Eventos para el botón de DERECHA
-    right.addEventListener('touchstart', (e) => handleTouch(e, 'd', true));
-    right.addEventListener('touchend', (e) => handleTouch(e, 'd', false));
-    right.addEventListener('touchcancel', (e) => handleTouch(e, 'd', false));
-
-    console.log("¡Controles táctiles configurados con éxito!");
+    console.log("¡Controles táctiles y de ratón configurados con éxito!");
 }
 
 
