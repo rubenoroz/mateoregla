@@ -193,7 +193,12 @@ function gameLoop() {
         clearInterval(spawnerId);
         clearInterval(scoreIntervalId); // Detener el contador de puntos
         drawGameOver();
-        canvas.addEventListener('click', () => location.reload(), { once: true });
+                const restartListener = (e) => {
+            e.preventDefault();
+            location.reload();
+        };
+        canvas.addEventListener('click', restartListener, { once: true });
+        canvas.addEventListener('touchstart', restartListener, { once: true });
     } else {
         animationId = requestAnimationFrame(gameLoop);
     }
@@ -245,14 +250,79 @@ function handleKeyUp(e) {
 window.addEventListener('keydown', handleKeyDown);
 window.addEventListener('keyup', handleKeyUp);
 
-// --- INICIO ---
+// --- LÓGICA PARA CONTROLES TÁCTILES ---
+function setupTouchControls() {
+    const up = document.getElementById('touch-up');
+    const left = document.getElementById('touch-left');
+    const down = document.getElementById('touch-down');
+    const right = document.getElementById('touch-right');
+
+    const handleTouch = (e, key, isPressed) => {
+        e.preventDefault(); // Prevenir comportamiento por defecto (scroll, zoom)
+        keys[key] = isPressed;
+    };
+
+    // Eventos para el botón de ARRIBA
+    up.addEventListener('touchstart', (e) => handleTouch(e, 'w', true));
+    up.addEventListener('touchend', (e) => handleTouch(e, 'w', false));
+    up.addEventListener('touchcancel', (e) => handleTouch(e, 'w', false));
+
+    // Eventos para el botón de IZQUIERDA
+    left.addEventListener('touchstart', (e) => handleTouch(e, 'a', true));
+    left.addEventListener('touchend', (e) => handleTouch(e, 'a', false));
+    left.addEventListener('touchcancel', (e) => handleTouch(e, 'a', false));
+
+    // Eventos para el botón de ABAJO
+    down.addEventListener('touchstart', (e) => handleTouch(e, 's', true));
+    down.addEventListener('touchend', (e) => handleTouch(e, 's', false));
+    down.addEventListener('touchcancel', (e) => handleTouch(e, 's', false));
+
+    // Eventos para el botón de DERECHA
+    right.addEventListener('touchstart', (e) => handleTouch(e, 'd', true));
+    right.addEventListener('touchend', (e) => handleTouch(e, 'd', false));
+    right.addEventListener('touchcancel', (e) => handleTouch(e, 'd', false));
+}
+
+
+// --- INICIO Y PANTALLA DE INICIO ---
+
+function drawStartScreen() {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = 'white';
+    ctx.font = '40px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Toca para Empezar', canvas.width / 2, canvas.height / 2);
+}
+
 function startGame() {
     console.log("Iniciando el juego...");
+    setupTouchControls(); // Configurar controles táctiles
     score = 0;
-    // Incrementar puntuación cada 100ms
+    isGameOver = false;
+    
+    clearInterval(scoreIntervalId);
+    clearInterval(spawnerId);
+
     scoreIntervalId = setInterval(() => { score += 10; }, 100);
     spawnerId = setInterval(spawnObstacle, 1500);
+    
     gameLoop();
 }
 
-startGame();
+function init() {
+    drawPlayer();
+    drawStartScreen();
+
+    const startListener = (e) => {
+        e.preventDefault();
+        startGame();
+    };
+
+    canvas.addEventListener('click', startListener, { once: true });
+    canvas.addEventListener('touchstart', startListener, { once: true });
+}
+
+// Empezar el proceso de inicialización
+init();
