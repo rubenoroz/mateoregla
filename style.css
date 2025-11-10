@@ -1,52 +1,114 @@
+/* --- Contenedor Principal y Pantallas --- */
 body {
-    margin: 0;
-    background-color: #222;
+    font-family: 'Courier New', Courier, monospace;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
-    color: white;
-    font-family: sans-serif;
+    background-color: #f0f8ff;
+    margin: 0;
 }
 
-canvas {
-    background-color: #000;
-    border: 2px solid white;
+#main-container {
+    width: 800px;
+    text-align: center;
 }
 
-#touch-controls {
-    display: none; /* Oculto por defecto */
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    user-select: none; /* Evita la selección de texto */
+.screen {
+    display: none; /* Oculta todas las pantallas por defecto */
 }
 
-.touch-row {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 10px;
+.screen.active {
+    display: block; /* Muestra solo la pantalla activa */
 }
 
-.control-btn {
-    width: 60px;
-    height: 60px;
-    background: rgba(128, 128, 128, 0.5);
-    color: white;
-    font-size: 24px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-    margin: 0 15px;
+/* --- Estilos de Menú y Botones --- */
+#menu-screen h2, #game-over-screen h2, #level-complete-screen h2 {
+    font-size: 2.5em;
+    color: #333;
+}
+
+.level-button, #restart-button, .back-to-menu {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.5em;
+    padding: 15px 30px;
+    margin: 10px;
+    border: 2px solid #000;
+    background-color: #fff;
     cursor: pointer;
+    transition: all 0.2s;
 }
 
-/* Media Query para mostrar los controles solo en dispositivos táctiles */
-@media (hover: none) and (pointer: coarse) {
-    #touch-controls {
-        display: block;
-    }
+.level-button:not(.disabled):hover, #restart-button:hover, .back-to-menu:hover {
+    background-color: #000;
+    color: #fff;
 }
+
+.level-button.disabled {
+    border-color: #ccc;
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+/* --- Pantalla de Juego --- */
+#game {
+    width: 100%;
+    height: 300px;
+    border: 2px solid #000;
+    position: relative;
+    overflow: hidden;
+    background-color: #fff;
+    margin: 0 auto;
+}
+
+#ground {
+    width: 100%; height: 2px; background-color: #000; position: absolute; bottom: 20px; left: 0;
+}
+
+#potato {
+    width: 50px; height: 60px; background-color: #d2b48c; border-radius: 45% 55% 50% 50% / 35% 35% 65% 65%;
+    position: absolute; bottom: 22px; left: 50px; transition: all 0.2s;
+}
+
+/* Efectos y Estados de la Papa */
+#potato.boost-active { box-shadow: 0 0 20px 8px #ffdf00; filter: brightness(1.2); }
+#potato.surprised .eye { width: 12px; height: 12px; top: 18px; }
+#potato.surprised .mouth { opacity: 1; width: 10px; height: 10px; border: 2px solid #000; bottom: 12px; transform: rotate(0deg); }
+#potato.crouching { height: 40px; width: 60px; }
+#potato.crouching::before, #potato.crouching::after { bottom: -8px; transform: rotate(90deg); }
+
+/* Piernas */
+#potato::before, #potato::after { content: ''; position: absolute; width: 6px; height: 12px; background-color: #4a3b2a; bottom: -10px; border-radius: 3px; transition: all 0.2s; }
+#potato::before { left: 15px; animation: run-left 0.4s linear infinite; }
+#potato::after { right: 15px; animation: run-right 0.4s linear infinite; }
+#potato.running::before, #potato.running::after { animation-play-state: running; }
+#potato:not(.running)::before, #potato:not(.running)::after { animation-play-state: paused; }
+@keyframes run-left { 0%, 100% { transform: rotate(-15deg); } 50% { transform: rotate(15deg); } }
+@keyframes run-right { 0%, 100% { transform: rotate(15deg); } 50% { transform: rotate(-15deg); } }
+
+/* Cara */
+.eye { position: absolute; width: 8px; height: 8px; background-color: #000; border-radius: 50%; top: 20px; transition: all 0.2s; }
+.eye:nth-child(1) { left: 15px; }
+.eye:nth-child(2) { right: 15px; }
+.mouth { position: absolute; width: 15px; height: 8px; bottom: 15px; left: calc(50% - 7.5px); border-radius: 50%; border: 2px solid transparent; border-bottom-color: #000; transform: rotate(10deg); opacity: 0; transition: all 0.2s; }
+
+/* Animaciones de Salto */
+.jump { animation: jump 0.5s linear; }
+@keyframes jump { 0%, 100% { bottom: 22px; } 50% { bottom: 120px; } }
+.boost-jump { animation: boost-jump 1.5s ease-out; }
+@keyframes boost-jump { 0%, 100% { bottom: 22px; } 50% { bottom: 90px; } }
+
+/* Obstáculos y Power-ups */
+.obstacle, .flying-obstacle, .spatula-boost, .egg-obstacle { position: absolute; animation-name: move; animation-timing-function: linear; animation-iteration-count: infinite; }
+.obstacle { width: 40px; height: 40px; background-color: #333; border-radius: 50%; bottom: 22px; }
+.obstacle::after { content: ''; position: absolute; width: 30px; height: 8px; background-color: #666; left: -30px; top: 16px; }
+.flying-obstacle { width: 20px; height: 30px; background-color: rgba(41, 35, 26, 0.85); border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; transform: rotate(-15deg); bottom: 75px; }
+.spatula-boost { width: 80px; height: 20px; background-color: #aaa; border-radius: 4px; bottom: 22px; transform: rotate(-10deg); }
+.spatula-boost::after { content: ''; position: absolute; width: 10px; height: 40px; background-color: #333; right: -10px; top: -20px; transform: rotate(25deg); }
+.egg-obstacle { width: 30px; height: 40px; background-color: #fff; border: 2px solid #ddd; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; bottom: 60px; }
+@keyframes move { from { right: -100px; } to { right: 900px; } }
+
+/* UI del Juego */
+#score { position: absolute; top: 10px; right: 60px; font-size: 24px; }
+#goal { position: absolute; top: 10px; right: 10px; font-size: 24px; color: #999; }
+.instructions { margin-top: 20px; font-size: 1.2em; }
